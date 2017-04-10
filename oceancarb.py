@@ -19,7 +19,7 @@ import numpy as np
 
 # === FUNCTIONS ================================================================
 # === Dissociation/equilibrium constants =======================================
-#   amp: 2-aminopyridine    Seawater pH [BE86]
+# k2amp: 2-aminopyridine    Seawater pH [BE86]
 #  k1k2: carbonic acid         Total pH [LDK00]
 #  kh2o: water                 Total pH []
 #    kb: boric acid            Total pH []
@@ -34,15 +34,9 @@ import numpy as np
 # ==============================================================================
 
 
+# === Dissociation/equilibrium constants =======================================
 
-def istr(sal):
-    # Ionic strength
-    istr = 19.924 * sal / (1000.0 - 1.005 * sal)
-    return istr
-
-
-
-def amp(temp, sal):
+def k2amp(temp, sal):
 # The 2-aminopyridine stoichiometric dissociation constant
 # Empirically determined in synthetic seawater [BE86]
 
@@ -51,6 +45,42 @@ def amp(temp, sal):
 
     return pKstarSWS_AMP
 
+
+def k1k2(temp, sal):
+# Carbonic acid stoichiometric equilibrium constants, Total pH [LDK00]
+    pKstarT_C1 = 3633.86 / temp - 61.2172 + 9.6777 * np.log(temp) \
+        - 0.011555 * sal + 0.0001152 * sal ** 2
+
+    pKstarT_C2 = 471.78 / temp + 25.929 - 3.16967 * np.log(temp) \
+        - 0.01781 * sal + 0.0001122 * sal ** 2
+
+    return pKstarT_C1, pKstarT_C2
+
+
+def kb(temp, sal):
+# Boric acid equilibrium constant, Total pH scale
+# Equation 23 [D90a]
+
+    lnKB = (-8966.90 - 2890.53 * sal ** 0.5 - 77.942 * sal \
+        + 1.728 * sal ** 1.5 - 0.0996 * sal ** 2) / temp \
+        + 148.0248 + 137.1942 * sal ** 0.5 + 1.62142 * sal \
+        - (24.4344 + 25.085 * sal ** 0.5 + 0.2474 * sal) \
+        * np.log(temp) + 0.053105 * sal ** 0.5 * temp
+
+    pKstarT_B = -np.log10(np.exp(lnKB))
+
+    return pKstarT_B
+
+
+def kh2o(temp, sal):
+    # WATER
+    lnKW = 148.96502 - 13847.26 / temp - 23.6521 * np.log(temp) \
+        + (118.67 / temp - 5.977 + 1.0495 * np.log(temp)) \
+        * sal ** 0.5 - 0.01615 * sal
+
+    pKstarT_W = -np.log10(np.exp(lnKW))
+
+    return pKstarT_W
 
 
 def khso4(temp, sal):
@@ -70,33 +100,7 @@ def khso4(temp, sal):
 
 
 
-def kh2o(temp, sal):
-    # WATER
-    lnKW = 148.96502 - 13847.26 / temp - 23.6521 * np.log(temp) \
-        + (118.67 / temp - 5.977 + 1.0495 * np.log(temp)) \
-        * sal ** 0.5 - 0.01615 * sal
-
-    pKstarT_W = -np.log10(np.exp(lnKW))
-
-    return pKstarT_W
-
-
-
-def kb(temp, sal):
-# Boric acid equilibrium constant, Total pH scale
-# Equation 23 [D90a]
-
-    lnKB = (-8966.90 - 2890.53 * sal ** 0.5 - 77.942 * sal \
-        + 1.728 * sal ** 1.5 - 0.0996 * sal ** 2) / temp \
-        + 148.0248 + 137.1942 * sal ** 0.5 + 1.62142 * sal \
-        - (24.4344 + 25.085 * sal ** 0.5 + 0.2474 * sal) \
-        * np.log(temp) + 0.053105 * sal ** 0.5 * temp
-
-    pKstarT_B = -np.log10(np.exp(lnKB))
-
-    return pKstarT_B
-
-
+# === Concentrations ===========================================================
 
 def tb(sal):
 # Estimate total boron from practical salinity [LKB10]
@@ -119,3 +123,12 @@ def tb(sal):
     TB_unc_sal = TB * ((B_unc_sal / B) ** 2 + (B_RAM_unc / B_RAM) ** 2) ** 0.5
 
     return TB, TB_unc, TB_unc_sal
+
+
+
+# === Miscellaneous ============================================================
+
+def istr(sal):
+# Ionic strength
+    istr = 19.924 * sal / (1000.0 - 1.005 * sal)
+    return istr
