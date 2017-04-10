@@ -105,19 +105,29 @@ def khso4(temp, sal):
 
 # === Concentrations ===========================================================
 
-def tb(sal):
-# Estimate total boron from practical salinity [LKB10] in micromol/kg
+def tb(sal, *args):
+# Estimate total boron from practical salinity in micromol/kg
+# Optional options: LKB10 [default], U74
+
+    # Set up and select appropriate set of constants
+    B_sal_dict     = {'LKB10': 0.1336, 'U74': 0.232 / 1.80655}
+    B_sal_unc_dict = {'LKB10': 0.0005, 'U74': 0.005 / 1.80655}
+
+    if len(args) == 1:
+        ref = args[0]
+    else:
+        ref = 'LKB10'
 
     # TB calculation
-    B_sal = 0.1336        # boron/salinity / mg/kg
-    B     = B_sal * sal   # boron / mg/kg
-    B_RAM = 10.811e3      # relative atomic mass of boron / mg/mol [DSC07]
-    TB    = 1e6 * B/B_RAM # total boron / micromol/kg
+    B_sal = B_sal_dict[ref] # boron/salinity / mg/kg
+    B     = B_sal * sal     # boron / mg/kg
+    B_RAM = 10.811e3        # relative atomic mass of boron / mg/mol [DSC07]
+    TB    = 1e6 * B/B_RAM   # total boron / micromol/kg
 
     # Uncertainty in TB, assuming perfect sal
-    B_sal_unc = 0.0005          # / mg/kg [LKB10]
-    B_unc     = B_sal_unc * sal # / mg/kg
-    B_RAM_unc = 0.007e3         # / mg/mol [DSC07]
+    B_sal_unc = B_sal_unc_dict[ref]
+    B_unc     = B_sal_unc * sal
+    B_RAM_unc = 0.007e3
     TB_unc    = TB * ((B_unc / B) ** 2 + (B_RAM_unc / B_RAM) ** 2) ** 0.5
 
     # Alternatively, assuming 0.0034 uncertainty in sal [lM11]
