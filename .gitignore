@@ -3,3 +3,6 @@
 
 # OS
 .DS_STORE
+
+# Python
+*.pyc
