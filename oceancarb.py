@@ -15,21 +15,24 @@ import numpy as np
 # LDK00: Lueker et al.    2000 MC   10.1016/S0304-4203(00)00022-0
 # LKB10: Lee et al.       2010 GCA  10.1016/j.gca.2009.12.027
 #  lM11: Le Menn          2011 OS   10.5194/os-7-651-2011
+# WLD69: Wooster et al.   1969 L&O
+#   W71: Warner           1971 DSR  10.1016/0011-7471(71)90030-1
 # ==============================================================================
 
 # === FUNCTIONS ================================================================
 # === Dissociation/equilibrium constants =======================================
-# k2amp: 2-aminopyridine    Seawater pH [BE86]
-#  k1k2: carbonic acid         Total pH [LDK00]
-#  kh2o: water                 Total pH []
-#    kb: boric acid            Total pH []
-# khso4: bisulfate ion         Total pH []
+# k2amp: 2-aminopyridine    Seawater pH [BE86]   (temp, sal)
+#  k1k2: carbonic acid         Total pH [LDK00]  (temp, sal)
+#  kh2o: water                 Total pH []       (temp, sal)
+#    kb: boric acid            Total pH []       (temp, sal)
+# khso4: bisulfate ion         Total pH []       (temp, sal)
 #
 # === Concentrations ===========================================================
-#    tb: boric acid                     [LDK10]
+#    tb: boric acid         micromol/kg [LDK10]  (sal)
+#    tf: fluoride                mol/kg [W71]    (sal)
 #
 # === Miscellaneous ============================================================
-#  istr: Ionic strength                 []
+#  istr: Ionic strength                 []       (sal)
 #
 # ==============================================================================
 
@@ -103,7 +106,7 @@ def khso4(temp, sal):
 # === Concentrations ===========================================================
 
 def tb(sal):
-# Estimate total boron from practical salinity [LKB10]
+# Estimate total boron from practical salinity [LKB10] in micromol/kg
 
     # TB calculation
     B_sal = 0.1336        # boron/salinity / mg/kg
@@ -124,6 +127,23 @@ def tb(sal):
 
     return TB, TB_unc, TB_unc_sal
 
+
+def tf(sal):
+# Estimate total fluoride from practical salinity [W71] in mol/kg
+
+    F_Cl = 6.75e-5
+    F_Cl_unc = 0.03e-5
+
+    F_mass = 18.998 # g/mol [CO2 guide]
+    F_mass_unc = 0.001 # g/mol [CO2 guide]
+
+    # Calculate tF
+    TF = (F_Cl/F_mass) * sal / 1.80655; # mol/kg, factor 1.80655 from WLD69
+
+    # Uncertainty, assuming perfect salinity
+    TF_unc = TF * ((F_Cl_unc / F_Cl) ** 2 + (F_mass_unc / F_mass) ** 2) ** 0.5
+
+    return TF, TF_unc
 
 
 # === Miscellaneous ============================================================
