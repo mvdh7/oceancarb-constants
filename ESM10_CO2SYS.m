@@ -19,6 +19,8 @@ function [gDIC,bDIC,oDIC,gALK,bALK,oALK] = ESM10_CO2SYS( ...
 %  Attempting to reproduce ESM10's Fig. 2 with their original equations
 %  fails for oDIC and oALK. However, the figure can be exactly reproduced
 %  using the corrected equations - see companion script ESM10_test.m
+%  Thus presumably ESM10 did have the correct equation at some point and
+%  used it to generate their figures.
 % The original, wrong equations are also provided below (commented out)
 %  should you wish to compare the results yourself.
 % 
