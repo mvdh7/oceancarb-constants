@@ -18,7 +18,7 @@ lnKB = (-8966.90   -  2890.53  *S.^0.5 - 77.942   *S ...
      - (   24.4344 +    25.085 *S.^0.5 +   0.2474 *S) .* log(T) ...
      +      0.053105*S.^0.5 .* T;
  
-pKstarT_B = -log10(exp(lnKB));
+pKstarT_B = -log10(exp(lnKB));  
 
 %% BISULPHATE - Free pH scale
 % D90b is paywalled, so equations are from DSC07:
