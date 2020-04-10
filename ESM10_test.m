@@ -5,8 +5,8 @@ t   = 25;
 s   = 35;
 
 % Evaluate buffer factors
-[gDIC,bDIC,oDIC,gALK,bALK,oALK] = ESM10_CO2SYS( ...
-    ta,dic,1,2,s,t,t,0,0,0,0,3,10,3);
+[gDIC, bDIC, oDIC, gALK, bALK, oALK] = ESM10_CO2SYS( ...
+    ta, dic, 1, 2, s, t, t, 0, 0, 0, 0, 3, 10, 3);
 
 % Plot results like ESM10 Fig. 2
 figure(1); clf; hold on
