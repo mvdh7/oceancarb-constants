@@ -1,8 +1,8 @@
 % Define input conditions
 dic = (1600:3200)';
-ta  = 2250;
-t   = 25;
-s   = 35;
+ta = 2250;
+t = 25;
+s = 35;
 
 % Evaluate buffer factors
 [gDIC, bDIC, oDIC, gALK, bALK, oALK] = ESM10_CO2SYS( ...
